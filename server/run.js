@@ -5,18 +5,43 @@ const patientSchema = require('./schemas/patient')
 const userSchema = require('./schemas/user')
 var api = require('./api.js').app;
 
-api.put('/login', function(request, response) {
-  mongo().then(async (mongoose) => {
+api.put('/login', async function (request, response) {
+  await mongo().then(async (mongoose) => {
     try {
         console.log(request.body)
-      
+        
         const resultUser = await userSchema.findOne({
             username: request.body.username,
             password: request.body.password,
             user_type: 1
         })
 
-        if(resultUser != null)
+        console.log(resultUser)
+
+        if(resultUser)
+          response.json("true");
+        else
+          response.json("false")
+    } finally {
+        mongoose.connection.close()
+    }
+})
+});
+
+api.put('/login_doc', async function (request, response) {
+  await mongo().then(async (mongoose) => {
+    try {
+        console.log(request.body)
+        
+        const resultUser = await userSchema.findOne({
+            username: request.body.username,
+            password: request.body.password,
+            user_type: 2
+        })
+
+        console.log(resultUser)
+
+        if(resultUser)
           response.json("true");
         else
           response.json("false")
