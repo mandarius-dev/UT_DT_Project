@@ -2,7 +2,15 @@
     <section class="section section-shaped section-lg my-0">
 
         <div class="container pt-lg-md">
+            <base-alert :show="alert_error" type="danger" dismissible>
+                <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
+                <span class="alert-inner--text"><strong>danger!</strong> This is a danger alert—check it out!</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </base-alert>
             <div class="row justify-content-center">
+
                 <div class="col-lg-5">
                     <card type="secondary" shadow
                           header-classes="bg-grey pb-5"
@@ -52,14 +60,16 @@
                                 <base-input alternative
                                             class="mb-3"
                                             placeholder="Name"
-                                            addon-left-icon="ni ni-user-run">
+                                            addon-left-icon="ni ni-user-run"
+                                            v-model="username_doc">
                                 </base-input>
                                 <base-input alternative
                                             type="password"
                                             placeholder="Password"
-                                            addon-left-icon="ni ni-lock-circle-open">
+                                            addon-left-icon="ni ni-lock-circle-open"
+                                            v-model="password_doc">
                                 </base-input>
-                                <div class="text-center">
+                                <div class="text-center" @click="login_doc">
                                     <base-button type="primary" class="my-4">Sign In</base-button>
                                 </div>
                             </form>
@@ -80,23 +90,46 @@ export default {
             name: "Login",
             username: "",
             password: "",
-            login_status: false
+            username_doc: "",
+            password_doc: "",
+            login_status: false,
+            alert_error: false,
         };
     },
     methods: {
         login_user: function() {
-            console.log('Hello, testing connection with axios');
+            console.log('user login');
             console.log(this.username)
             axios.put("http://localhost:8081/login", {username: this.username, password: this.password}).then(
-                response => (this.login_status = response.data)
+                response => (this.login_status = response.data) 
             );
 
             console.log(this.login_status)
 
-            if(this.login_status) {
+            if(this.login_status == "true") {
                 this.$router.push("profile")
                 localStorage.setItem('username', this.username)
+            }
+            else
+            {
+                console.log("error");
+                this.alert_error = true;
+                console.log(this.alert_error);
+            }
+        },
 
+        login_doc: function() {
+            console.log('doctor login');
+            console.log(this.username_doc)
+            axios.put("http://localhost:8081/login_doc", {username: this.username_doc, password: this.password_doc}).then(
+                response => (this.login_status = response.data) 
+            );
+
+            console.log(this.login_status)
+
+            if(this.login_status == "true") {
+                this.$router.push("profile_doc")
+                localStorage.setItem('username', this.username_doc)
             }
         }
 }
