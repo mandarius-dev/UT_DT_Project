@@ -9,24 +9,66 @@ const connectToMongoDB = async () => {
         try {
             console.log('connected to mongodb');
 
-            const resultUser = await userSchema.findOne({
-                last_name: 'Daniel',
+            const doctor = {
+                username: "heidrich",
+                password: 1234,
+                first_name: "Heidrich",
+                last_name: "Vidas",
+                gender: "male",
+                address: "Cluj-Napoca",
+                phone_number: 123456,
                 user_type: 2
-            })
+            }
 
-            console.log(resultUser)
+            const doctor1 = {
+                username: "tadg",
+                password: 1234,
+                first_name: "Tadg",
+                last_name: "Swapna",
+                gender: "male",
+                address: "Cluj-Napoca",
+                phone_number: 123456,
+                user_type: 2
+            }
 
-            const resultDoctor = await doctorSchema.findOne({
-                user_id: new mongoose.Types.ObjectId(resultUser._id.valueOf())
-            })
+            const doctor2 = {
+                username: "gaye",
+                password: 1234,
+                first_name: "Gaye",
+                last_name: "Yoldirim",
+                gender: "male",
+                address: "Cluj-Napoca",
+                phone_number: 123456,
+                user_type: 2
+            }
 
-            console.log(resultDoctor.spec_id.valueOf())
+            const doctor3 = {
+                username: "heidrich",
+                password: 1234,
+                first_name: "Heidrich",
+                last_name: "Vidas",
+                gender: "male",
+                address: "Cluj-Napoca",
+                phone_number: 123456,
+                user_type: 2
+            }
 
-            const resultSpec = await specializationSchema.findOne({
-                _id: new mongoose.Types.ObjectId(resultDoctor.spec_id.valueOf())
-            })
-
-            console.log(resultSpec)
+            const doctor4 = {
+                username: "ulvi",
+                password: 1234,
+                first_name: "Ulvi",
+                last_name: "Danutė",
+                gender: "male",
+                address: "Cluj-Napoca",
+                phone_number: 123456,
+                user_type: 2
+            }
+            
+            await new userSchema(doctor).save();
+            await new userSchema(doctor1).save();
+            await new userSchema(doctor2).save();
+            await new userSchema(doctor3).save();
+            await new userSchema(doctor4).save();
         } finally {
             mongoose.connection.close()
         }
