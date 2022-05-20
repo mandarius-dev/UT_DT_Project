@@ -114,6 +114,7 @@ api.put('/appoitnment', async function (request, response) {
           date: request.body.date,
           remark: "No remarks yet.",
           description: request.body.simptoms,
+          diagnostic: "No diagnostic given",
           medication: "No medication yet",
           title: request.body.short_description
         }
@@ -125,6 +126,65 @@ api.put('/appoitnment', async function (request, response) {
 })
 });
 
+api.put('/user_appointment', async function (request, response) {
+  await mongo().then(async (mongoose) => {
+    try {
+        console.log(request.body)
+        
+        const user = await userSchema.find({
+          username: request.body.username,
+          user_type: 1
+        })
+
+        const appointments = await appointmentSchema.find({
+          user_id: new mongoose.Types.ObjectId(user[0]._id.valueOf())
+        })
+
+        var responseApp = []
+
+        for(var i=0; i < appointments.length; i++)
+        {
+            console.log(appointments[i])
+
+            const doc = await doctorSchema.find({
+              user_id: new mongoose.Types.ObjectId(appointments[i].doct_id.valueOf())
+            })
+
+            const docName = await userSchema.find({
+              user_id: new mongoose.Types.ObjectId(doc[0].user_id.valueOf()),
+              user_type: 2
+            })
+
+            console.log(doc[0])
+
+            const spec = await specializationSchema.find({
+              _id: new mongoose.Types.ObjectId(doc[0].spec_id.valueOf())
+            })
+
+            var appInfo = {
+              id: new mongoose.Types.ObjectId(appointments[i]._id.valueOf()),
+              name_doc: docName[0].first_name + " " + docName[0].last_name,
+              spec: spec[0].spec_name,
+              date: appointments[i].date,
+              short_description: appointments[i].title,
+              description: appointments[i].description,
+              diagnostic: appointments[i].diagnostic,
+              medication: appointments[i].medication,
+              remark: appointments[i].remark,
+            }
+
+            responseApp.push(appInfo)
+        }
+
+        console.log(responseApp);
+
+        response.json(responseApp);
+    } finally {
+        mongoose.connection.close()
+    }
+})
+});
+
 api.listen(8082, function(){
   console.log('CORS-enabled web server is listening on port 8082...');
-});
+});                                               
