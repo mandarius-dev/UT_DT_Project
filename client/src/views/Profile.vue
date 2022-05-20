@@ -47,7 +47,7 @@
                                             <p>{{remark}}</p>
                                         </div>
                                     </div>
-                                    <base-button class="mb-3" type="primary" @click="test">Cancel appoiment</base-button>
+                                    <base-button class="mb-3" type="primary" @click="cancel_appointment">Cancel appoiment</base-button>
                                 </div>
                             </div>
                         </card>
@@ -63,9 +63,9 @@
                                 </div>
                                 <div class="mb-3 mt-2" v-for="(app, index) in appointments" :key="index">
                                     <base-button @click="button_click(index)" style="width: 100%" class="btn-1" outline type="primary">
-                                        <h5>{{app.date}}</h5>
-                                        <h4>{{app.short_description}}</h4>
-                                        <h4>{{app.name_doc}}</h4>
+                                        <h6>{{app.date}}</h6>
+                                        <h5>{{app.name_doc}}</h5>
+                                        <h6>{{app.short_description}}</h6>
                                     </base-button>
                                 </div>
                             </div>
@@ -90,24 +90,53 @@ export default {
         return {
             name: "Profile",
             appointments: {},
-            short_description: "",
-            description: "",
+            short_description: "Welcome to the appointment manager",
+            description: "Below you would see what the doctor recomends",
             diagnostic: "",
             medication: "",
-            remark: ""
+            remark: "",
+            date: "",
+            index: -1
         };
     },
     methods: {
-        test: function() {
-            console.log(this.appointments)
+        cancel_appointment: function() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+            
+            console.log(new Date(today))
+            console.log(new Date(this.date))
+
+            if(new Date(this.date) > new Date(today)) {
+                axios.put("http://localhost:8082/delete_appointment", {id: this.appointments[this.index].id}).then(
+
+                )
+                this.appointments.splice(this.index,1)
+                this.short_description = "Welcome to the appointment manager"
+                this.description = "Below you would see what the doctor recomends"
+                this.diagnostic = ""
+                this.medication = ""
+                this.remark =  ""
+                this.date = ""
+                this.index = -1
+            }
+            else
+                console.log(false)
         },
 
         button_click: function(index) {
+            console.log(this.appointments[index].date)
             this.short_description = this.appointments[index].short_description;
             this.description = this.appointments[index].description;
             this.diagnostic = this.appointments[index].diagnostic;
             this.medication = this.appointments[index].medication;
             this.remark = this.appointments[index].remark;
+            this.date = this.appointments[index].date;
+            this.index = index;
         }
 }
 };
