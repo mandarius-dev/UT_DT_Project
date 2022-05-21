@@ -125,6 +125,41 @@ api.put('/appoitnment', async function (request, response) {
 })
 });
 
+api.put('/profile', async function (request, response) {
+  await mongo().then(async (mongoose) => {
+    try {
+        console.log(request.body)
+        
+        const resultUser = await userSchema.findOne({
+            username: request.body.username
+        })
+
+
+        console.log(resultUser)
+
+        if(resultUser){
+          const user = {
+            user_id: new mongoose.Types.ObjectId(resultUser._id.valueOf()),
+            username: resultUser.username,
+            password: resultUser.password,
+            first_name: resultUser.first_name,
+            last_name: resultUser.last_name,
+            gender: resultUser.gender,
+            address: resultUser.address,
+            phone_number: resultUser.phone_number,
+            user_type: resultUser.user_type
+          }
+          console.log(user);
+          response.json(user);
+        }
+        else
+          response.json("User does not exist!")
+    } finally {
+        mongoose.connection.close()
+    }
+})
+});
+
 api.listen(8082, function(){
   console.log('CORS-enabled web server is listening on port 8082...');
 });

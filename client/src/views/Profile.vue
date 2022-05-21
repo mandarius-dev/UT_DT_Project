@@ -9,9 +9,10 @@
                                 <div class="text-left mt-5">
                                     <div class="row">
                                         <div class="col-lg-8 order-lg-1">
-                                            <h3>Jessica Jones
-                                                <span class="font-weight-light">, Age</span>
+                                            <h3> {{first_name}} {{last_name}}
+                                                <span class="font-weight-light">, {{age}}</span>
                                             </h3>
+                                            <base-button class="mb-3" type="primary" @click="getUserData">Show user data</base-button>
                                         </div>
                                         <div class="col-lg-1 order-lg-2">
                                             <router-link to="/register" class="btn btn-primary">
@@ -19,8 +20,8 @@
                                             </router-link>
                                         </div>
                                     </div>
-                                    <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Gender</div>
-                                    <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Address</div>
+                                    <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Gender: {{gender}}</div>
+                                    <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Address: {{address}}</div>
                                 </div>
                                 <div class="mt-5">
                                     <h5>Stomac pain</h5>
@@ -92,14 +93,47 @@ import axios from 'axios';
 
 export default {
     name: "Profile",
+
+    beforeMount(){
+                axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
+                response => (this.user_id = response.data.user_id,
+
+                    this.first_name = response.data.first_name,
+                    this.gender = response.data.gender,
+                    this.last_name = response.data.last_name,
+                    this.address = response.data.address,
+                    this.phone_number = response.data.phone_number,
+                    this.age = response.data.age,
+                    this.user_type = response.data.user_type) 
+            );
+
+    },
+
     data() {
         return {
-            name: "Profile",
+            user_id: '',
+            username: '',
+            password: '',
+            first_name: '',
+            last_name: '',
+            gender: '',
+            address: '',
+            age: '',
+            phone_number: '',
+            user_type: ''
         };
     },
     methods: {
         test: function() {
-            console.log(localStorage.getItem('username'))
+            console.log(localStorage.getItem('username'));
+
+            console.log(this.user_id);
+            console.log(this.gender);
+            console.log(this.first_name);
+            console.log(this.last_name);
+        },
+        getUserData: function(){
+            
         }
 }
 };
