@@ -193,7 +193,8 @@ api.put('/doc_appointment', async function (request, response) {
       })
 
       const appointments = await appointmentSchema.find({
-        doct_id: new mongoose.Types.ObjectId(doc[0]._id.valueOf())
+        doct_id: new mongoose.Types.ObjectId(doc[0]._id.valueOf()),
+        date: request.body.date
       })
 
       var responseApp = []
