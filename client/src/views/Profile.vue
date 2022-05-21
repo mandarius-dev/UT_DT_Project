@@ -2,11 +2,17 @@
     <div class="profile-page">
         <section class="section section-skew">
             <div class="container pt-lg-md">
+                <div v-show="alert_error" class="alert alert-danger" role="alert">
+                    Appoitnment can not be deleted!
+                </div>
+                <div v-show="alert_success" class="alert alert-success" role="alert">
+                    Appoitnment deleted!
+                </div>
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <card shadow class="card-profile" no-body>
                             <div class="px-4">
-                                <div class="text-left mt-5">
+                                <div class="text-left mt-3">
                                     <div class="row">
                                         <div class="col-lg-8 order-lg-1">
                                             <h3>Jessica Jones
@@ -96,7 +102,9 @@ export default {
             medication: "",
             remark: "",
             date: "",
-            index: -1
+            index: -1,
+            alert_error: false,
+            alert_success: false
         };
     },
     methods: {
@@ -123,12 +131,19 @@ export default {
                 this.remark =  ""
                 this.date = ""
                 this.index = -1
+                this.alert_error = false
+                this.alert_success = true
             }
             else
-                console.log(false)
+            {
+                this.alert_error = true
+                this.alert_success = false
+            }
         },
 
         button_click: function(index) {
+            this.alert_error = false
+            this.alert_success = false
             console.log(this.appointments[index].date)
             this.short_description = this.appointments[index].short_description;
             this.description = this.appointments[index].description;

@@ -3,6 +3,12 @@
         <div class="container pt-lg-md">
             <div class="row justify-content-center">
                 <div class="col-lg-9">
+                    <div v-show="alert_error" class="alert alert-danger" role="alert">
+                        Can not create appointment!
+                    </div>
+                    <div v-show="alert_success" class="alert alert-success" role="alert">
+                        Appoitnment created!
+                    </div>
                     <card type="secondary" shadow
                           header-classes="bg-white pb-5"
                           body-classes="px-lg-5 py-lg-8"
@@ -91,7 +97,8 @@ export default {
             oldDate: "",
             masx_slots: 8,
             index: 0,
-            //rerender: 0
+            alert_error: false,
+            alert_success: false
         };
     },
     methods: { 
@@ -101,15 +108,27 @@ export default {
                 this.choosen_doctor_id = this.doctors[0].id
                 this.index = 0;
             }
-            console.log(this.choosen_doctor_id) 
-            this.doctors[this.index].appNumber++
-            console.log(this.doctors[this.index].appNumber)
-            this.free_slots = this.masx_slots - this.doctors[this.index].appNumber
-            await axios.put("http://localhost:8082/appoitnment", {username: localStorage.getItem('username'), 
-                                                           doc_id: this.choosen_doctor_id, 
-                                                           short_description: this.short_description,
-                                                           simptoms: this.simptoms,
-                                                           date: this.dates.simple})
+
+            if(this.doctors[this.index].appNumber++ < this.masx_slots)
+            {
+                console.log(this.choosen_doctor_id) 
+                //this.doctors[this.index].appNumber++
+                console.log(this.doctors[this.index].appNumber)
+                this.free_slots = this.masx_slots - this.doctors[this.index].appNumber
+                this.alert_success = true
+                this.alert_error = false
+                await axios.put("http://localhost:8082/appoitnment", {username: localStorage.getItem('username'), 
+                                                            doc_id: this.choosen_doctor_id, 
+                                                            short_description: this.short_description,
+                                                            simptoms: this.simptoms,
+                                                            date: this.dates.simple})
+
+            }
+            else
+            {
+                this.alert_success = false
+                this.alert_error = true
+            }
 
         },
 
@@ -117,9 +136,15 @@ export default {
             this.index = event.target.value.split(".")[0]-1;
             this.choosen_doctor_id = this.doctors[event.target.value.split(".")[0]-1].id
             this.free_slots = this.masx_slots - this.doctors[event.target.value.split(".")[0]-1].appNumber
+
+            this.alert_success = false
+            this.alert_error = false
         },
 
         date_change: async function() {
+            this.alert_success = false
+            this.alert_error = false
+
             console.log("    ")
             console.log("old " + this.oldDate)
             console.log("new " + this.dates.simple)
@@ -133,7 +158,6 @@ export default {
                 
                 console.log(this.doctors[0].appNumber)
                 this.free_slots = this.masx_slots - this.doctors[0].appNumber
-                //this.rerender += 1
             }
         }
     }

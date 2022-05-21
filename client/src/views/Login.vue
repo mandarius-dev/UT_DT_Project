@@ -1,14 +1,10 @@
 <template>
     <section class="section section-shaped section-lg my-0">
-
+        
         <div class="container pt-lg-md">
-            <base-alert :show="alert_error" type="danger" dismissible>
-                <span class="alert-inner--icon"><i class="ni ni-like-2"></i></span>
-                <span class="alert-inner--text"><strong>danger!</strong> This is a danger alert—check it out!</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </base-alert>
+            <div v-show="alert_error" class="alert alert-danger" role="alert">
+                Login failed! Pease try again.
+            </div>
             <div class="row justify-content-center">
 
                 <div class="col-lg-5">
@@ -111,11 +107,7 @@ export default {
                 localStorage.setItem('username', this.username)
             }
             else
-            {
-                console.log("error");
                 this.alert_error = true;
-                console.log(this.alert_error);
-            }
         },
 
         login_doc: async function() {
@@ -131,6 +123,8 @@ export default {
                 this.$router.push("profile_doc")
                 localStorage.setItem('username', this.username_doc)
             }
+            else
+                this.alert_error = true;
         }
 }
 };
