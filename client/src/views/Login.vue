@@ -97,10 +97,10 @@ export default {
         };
     },
     methods: {
-        login_user: function() {
+        login_user: async function() {
             console.log('user login');
             console.log(this.username)
-            axios.put("http://localhost:8082/login", {username: this.username, password: this.password}).then(
+            await axios.put("http://localhost:8082/login", {username: this.username, password: this.password}).then(
                 response => (this.login_status = response.data) 
             );
 
@@ -118,10 +118,10 @@ export default {
             }
         },
 
-        login_doc: function() {
+        login_doc: async function() {
             console.log('doctor login');
             console.log(this.username_doc)
-            axios.put("http://localhost:8081/login_doc", {username: this.username_doc, password: this.password_doc}).then(
+            await axios.put("http://localhost:8082/login_doctor", {username: this.username_doc, password: this.password_doc}).then(
                 response => (this.login_status = response.data) 
             );
 

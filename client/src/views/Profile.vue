@@ -23,31 +23,31 @@
                                     <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Address</div>
                                 </div>
                                 <div class="mt-5">
-                                    <h5>Stomac pain</h5>
+                                    <h5>{{short_description}}</h5>
                                     <div class="row">
                                         <div class="col-lg">
-                                            <p>The description of what the patient said</p>
+                                            <p>{{description}}</p>
                                         </div>
                                     </div>
                                     <h5>Diagnostic</h5>
                                     <div class="row">
                                         <div class="col-lg">
-                                            <p>The diagnostic given by the doctor</p>
+                                            <p>{{diagnostic}}</p>
                                         </div>
                                     </div>
                                     <h5>Medication</h5>
                                     <div class="row">
                                         <div class="col-lg">
-                                            <p>Prescription given by the doctor</p>
+                                            <p>{{medication}}</p>
                                         </div>
                                     </div>
                                     <h5>Observations</h5>
                                     <div class="row">
                                         <div class="col-lg">
-                                            <p>Should be addmited to the hospital</p>
+                                            <p>{{remark}}</p>
                                         </div>
                                     </div>
-                                    <base-button class="mb-3" type="primary" @click="test">Cancel appoiment</base-button>
+                                    <base-button class="mb-3" type="primary" @click="cancel_appointment">Cancel appoiment</base-button>
                                 </div>
                             </div>
                         </card>
@@ -57,29 +57,18 @@
                             header-classes="bg-grey pb-5"
                             body-classes="px-lg-5 py-lg-5"
                             class="border-0">
-                            <template>
+                            <div>
                                 <div class="text-left text-muted mb-4" >
                                     <h2>Appoinments</h2>
                                 </div>
-                                <div class="mb-3 mt-2">
-                                    <base-button class="btn-1" outline type="primary">
-                                        <h5>Monday, 3</h5>
-                                        <h6>Simple idagnostic</h6>
+                                <div class="mb-3 mt-2" v-for="(app, index) in appointments" :key="index">
+                                    <base-button @click="button_click(index)" style="width: 100%" class="btn-1" outline type="primary">
+                                        <h6>{{app.date}}</h6>
+                                        <h5>{{app.name_doc}}</h5>
+                                        <h6>{{app.short_description}}</h6>
                                     </base-button>
                                 </div>
-                                <div class="mb-3 mt-2">
-                                    <base-button class="btn-1" outline type="primary">
-                                        <h5>Monday, 3</h5>
-                                        <h6>Simple idagnostic</h6>
-                                    </base-button>
-                                </div>
-                                <div class="mb-3 mt-2">
-                                    <base-button class="btn-1" outline type="primary">
-                                        <h5>Monday, 3</h5>
-                                        <h6>Simple idagnostic</h6>
-                                    </base-button>
-                                </div>
-                            </template>
+                            </div>
                         </card>
                     </div>
                 </div>
@@ -92,14 +81,62 @@ import axios from 'axios';
 
 export default {
     name: "Profile",
+    beforeMount() {
+        axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
+            response => (this.appointments = response.data)
+        )
+    },
     data() {
         return {
             name: "Profile",
+            appointments: {},
+            short_description: "Welcome to the appointment manager",
+            description: "Below you would see what the doctor recomends",
+            diagnostic: "",
+            medication: "",
+            remark: "",
+            date: "",
+            index: -1
         };
     },
     methods: {
-        test: function() {
-            console.log(localStorage.getItem('username'))
+        cancel_appointment: function() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+            
+            console.log(new Date(today))
+            console.log(new Date(this.date))
+
+            if(new Date(this.date) > new Date(today)) {
+                axios.put("http://localhost:8082/delete_appointment", {id: this.appointments[this.index].id}).then(
+
+                )
+                this.appointments.splice(this.index,1)
+                this.short_description = "Welcome to the appointment manager"
+                this.description = "Below you would see what the doctor recomends"
+                this.diagnostic = ""
+                this.medication = ""
+                this.remark =  ""
+                this.date = ""
+                this.index = -1
+            }
+            else
+                console.log(false)
+        },
+
+        button_click: function(index) {
+            console.log(this.appointments[index].date)
+            this.short_description = this.appointments[index].short_description;
+            this.description = this.appointments[index].description;
+            this.diagnostic = this.appointments[index].diagnostic;
+            this.medication = this.appointments[index].medication;
+            this.remark = this.appointments[index].remark;
+            this.date = this.appointments[index].date;
+            this.index = index;
         }
 }
 };

@@ -27,6 +27,7 @@
                                     <flat-picker slot-scope="{focus, blur}"
                                                 @on-open="focus"
                                                 @on-close="blur"
+                                                @input="date_change"
                                                 :config="{allowInput: true}"
                                                 class="form-control datepicker"
                                                 v-model="dates.simple">
@@ -40,6 +41,7 @@
                                         {{index+1}}. {{doc.name}}  -  {{doc.spec}}
                                     </option>
                                 </select>
+                                <h5>{{free_slots}} - free slot/slot's</h5>
                                 <div class="text-center">
                                     <base-button @click="make_appoitment" type="primary" class="my-4">Create appoiment</base-button>
                                 </div>
@@ -71,19 +73,20 @@ export default {
     },
 
     beforeMount() {
-        axios.put("http://localhost:8082/doctor",{}).then(
+        axios.put("http://localhost:8082/doctor",{date: this.dates.simple}).then(
             response => (this.doctors = response.data)
         )
     },
     data() {
         return {
             dates: {
-                simple: "2018-07-17"
+                simple: "2022-07-17"
             },
             doctors: {},
             short_description: "",
             simptoms: "",
-            choosen_doctor_id: ""
+            choosen_doctor_id: "",
+            free_slots: 0
         };
     },
     methods: { 
@@ -100,7 +103,16 @@ export default {
         },
 
         select_change: function(event) {
-            this.choosen_doctor_id = this.doctors[event.target.value.split(".")[0]-1].id;  
+            this.choosen_doctor_id = this.doctors[event.target.value.split(".")[0]-1].id
+            this.free_slots = this.doctors[event.target.value.split(".")[0]-1].appNUmber
+        },
+
+        date_change: async function() {
+            // console.log(this.dates.simple)
+            // await axios.put("http://localhost:8082/doctor",{date: this.dates.simple}).then(
+            //     response => (this.doctors = response.data)
+            // )
+            // console.log(this.doctors)
         }
     }
 };
