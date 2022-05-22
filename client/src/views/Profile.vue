@@ -15,19 +15,39 @@
                                 <div class="text-left mt-3">
                                     <div class="row">
                                         <div class="col-lg-8 order-lg-1">
-                                            <h3>Jessica Jones
-                                                <span class="font-weight-light">, Age</span>
-                                            </h3>
-                                        </div>
-                                        <div class="col-lg-1 order-lg-2">
-                                            <router-link to="/register" class="btn btn-primary">
-                                                Make appoiment
-                                            </router-link>
+                                            <h3> {{first_name}} {{last_name}}, {{age}}</h3>
                                         </div>
                                     </div>
-                                    <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Gender</div>
-                                    <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Address</div>
+                                    <h5>Username</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{username}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Address</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{address}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Phone number</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{phone_number}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Gender</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{gender}}</p>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </card>
+                        <br>
+                        <card shadow class="card-profile" no-body>
+                            <div class="px-4">
                                 <div class="mt-5">
                                     <h5>{{short_description}}</h5>
                                     <div class="row">
@@ -90,7 +110,18 @@ export default {
     beforeMount() {
         axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
             response => (this.appointments = response.data)
-        )
+        ),
+        axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
+                response => (this.user_id = response.data.user_id,
+                    this.username = response.data.username,
+                    this.first_name = response.data.first_name,
+                    this.gender = response.data.gender,
+                    this.last_name = response.data.last_name,
+                    this.address = response.data.address,
+                    this.phone_number = response.data.phone_number,
+                    this.age = response.data.age,
+                    this.user_type = response.data.user_type) 
+            );
     },
     data() {
         return {
@@ -104,7 +135,18 @@ export default {
             date: "",
             index: -1,
             alert_error: false,
-            alert_success: false
+            alert_success: false,
+
+            user_id: '',
+            username: '',
+            password: '',
+            first_name: '',
+            last_name: '',
+            gender: '',
+            address: '',
+            age: '',
+            phone_number: '',
+            user_type: ''
         };
     },
     methods: {
@@ -153,7 +195,7 @@ export default {
             this.date = this.appointments[index].date;
             this.index = index;
         }
-}
+    }
 };
 </script>
 <style>
