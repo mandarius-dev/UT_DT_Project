@@ -16,7 +16,7 @@
                                 <div class="text-left mt-3">
                                     <div class="row">
                                         <div class="col-lg-8 order-lg-1">
-                                            <h3> {{first_name}} {{last_name}}, {{age}}</h3>
+                                            <h3>{{first_name}} {{last_name}}, {{age}}</h3>
                                         </div>
                                     </div>
                                     <h5>Username</h5>
@@ -75,7 +75,10 @@
                                             <p>{{remark}}</p>
                                         </div>
                                     </div>
-                                    <base-button class="mb-3" type="primary" @click="cancel_appointment">Cancel appoiment</base-button>
+                                    <base-button class="mb-3 mr-4" type="primary" @click="cancel_appointment">Cancel appoiment</base-button>
+                                    <router-link to="/register" class="btn mb-3 btn-primary">
+                                        Make appoiment
+                                    </router-link>
                                 </div>
                             </div>
                         </card>
@@ -110,11 +113,11 @@ import axios from 'axios';
 
 export default {
     name: "Profile",
-    beforeMount() {
-        axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
+    async beforeMount() {
+        await axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
             response => (this.appointments = response.data)
         ),
-        axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
+        await axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
                 response => (this.user_id = response.data.user_id,
                     this.username = response.data.username,
                     this.first_name = response.data.first_name,
