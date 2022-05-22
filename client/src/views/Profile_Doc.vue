@@ -48,28 +48,20 @@
                                         <flat-picker slot-scope="{focus, blur}"
                                                     @on-open="focus"
                                                     @on-close="blur"
+                                                    @input="date_change"
                                                     :config="{allowInput: true}"
                                                     class="form-control datepicker"
                                                     v-model="dates.simple">
                                         </flat-picker>
                                     </base-input>
-                                    <div class="mb-3 mt-2">
-                                        <base-button class="btn-1" outline type="primary">
-                                            <h5>Monday, 3</h5>
-                                            <h6>Simple idagnostic</h6>
-                                        </base-button>
-                                    </div>
-                                    <div class="mb-3 mt-2">
-                                        <base-button class="btn-1" outline type="primary">
-                                            <h5>Monday, 3</h5>
-                                            <h6>Simple idagnostic</h6>
-                                        </base-button>
-                                    </div>
-                                    <div class="mb-3 mt-2">
-                                        <base-button class="btn-1" outline type="primary">
-                                            <h5>Monday, 3</h5>
-                                            <h6>Simple idagnostic</h6>
-                                        </base-button>
+                                    <div :key="rerender">
+                                        <div class="mb-3 mt-2" v-for="(app, index) in appointments" :key="index">
+                                            <base-button @click="button_click(index)" style="width: 100%" class="btn-1" outline type="primary">
+                                                <h6>{{app.date}}</h6>
+                                                <h5>{{app.name_user}}</h5>
+                                                <h6>{{app.short_description}}</h6>
+                                            </base-button>
+                                        </div>
                                     </div>
                                 </template>
                             </card>
@@ -84,10 +76,10 @@
                                         <h2>Appoiment</h2>
                                     </div>
                                     <div class="mt-5">
-                                        <h5>Stomac pain</h5>
+                                        <h5>{{short_description}}</h5>
                                         <div class="row">
                                             <div class="col-lg">
-                                                <p>The description of what the patient said</p>
+                                                <p>{{description}}</p>
                                             </div>
                                         </div>
                                         <h5>Diagnostic</h5>
@@ -95,7 +87,7 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="3" 
-                                                        placeholder="Describe your symptoms">
+                                                        placeholder="Pacients diagnostic">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -104,7 +96,7 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="3" 
-                                                        placeholder="Describe your symptoms">
+                                                        placeholder="Medications needed">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -113,7 +105,7 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="4" 
-                                                        placeholder="Describe your symptoms">
+                                                        placeholder="Remarks on the condition">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -129,20 +121,67 @@
     </div>
 </template>
 <script>
-    import flatPicker from "vue-flatpickr-component";
-    import "flatpickr/dist/flatpickr.css";
-    export default {
+import flatPicker from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
+import axios from 'axios';
+
+export default {
     components: {
         flatPicker
     },
+    beforeMount() {
+        axios.put("http://localhost:8082/doc_appointment",{username: localStorage.getItem('username'), date: this.dates.simple}).then(
+            response => (this.appointments = response.data)
+        )
+    },
     data() {
         return {
-        dates: {
-            simple: "2018-07-17"
-        }
+            dates: {
+                simple: "2022-07-17"
+            },
+            appointments: [],
+            short_description: "Welcome to the appointment manager",
+            description: "Below you can diagnoses and remarks",
+            diagnostic: "",
+            medication: "",
+            remark: "",
+            date: "",
+            index: -1,
+            rerender: 0,
+            oldDate: ""
         };
+    },
+    methods: {
+        button_click: function(index) {
+            console.log(this.appointments[index].date)
+            this.short_description = this.appointments[index].short_description;
+            this.description = this.appointments[index].description;
+            this.diagnostic = this.appointments[index].diagnostic;
+            this.medication = this.appointments[index].medication;
+            this.remark = this.appointments[index].remark;
+            this.date = this.appointments[index].date;
+            this.index = index;
+        },
+
+        date_change: async function() {
+            console.log("    ")
+            console.log("old " + this.oldDate)
+            console.log("new " + this.dates.simple)
+            if(new Date(this.oldDate).getTime() !== new Date(this.dates.simple).getTime())
+            {
+                console.log("endterd")
+                this.oldDate = this.dates.simple
+                await axios.put("http://localhost:8082/doc_appointment",{username: localStorage.getItem('username'), date: this.dates.simple}).then(
+                    response => (this.appointments = response.data)
+                )
+                
+                console.log(this.appointments)
+                this.rerender += 1
+            }
+
+        }
     }
-    };
+};
 </script>
 <style>
 </style>

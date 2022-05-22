@@ -27,6 +27,7 @@
                                     <flat-picker slot-scope="{focus, blur}"
                                                 @on-open="focus"
                                                 @on-close="blur"
+                                                @input="date_change"
                                                 :config="{allowInput: true}"
                                                 class="form-control datepicker"
                                                 v-model="dates.simple">
@@ -40,6 +41,7 @@
                                         {{index+1}}. {{doc.name}}  -  {{doc.spec}}
                                     </option>
                                 </select>
+                                <h5>{{free_slots}} - free slot/slot's</h5>
                                 <div class="text-center">
                                     <base-button @click="make_appoitment" type="primary" class="my-4">Create appoiment</base-button>
                                 </div>
@@ -70,28 +72,40 @@ export default {
         dropdown
     },
 
-    beforeMount() {
-        axios.put("http://localhost:8082/doctor",{}).then(
+    async beforeMount() {
+        await axios.put("http://localhost:8082/doctor",{date: this.dates.simple}).then(
             response => (this.doctors = response.data)
         )
+        this.free_slots = this.masx_slots - this.doctors[0].appNumber
     },
     data() {
         return {
             dates: {
-                simple: "2018-07-17"
+                simple: "2022-07-17"
             },
             doctors: {},
             short_description: "",
             simptoms: "",
-            choosen_doctor_id: ""
+            choosen_doctor_id: "",
+            free_slots: 0,
+            oldDate: "",
+            masx_slots: 8,
+            index: 0,
+            //rerender: 0
         };
     },
     methods: { 
-        make_appoitment: function() {
+        make_appoitment: async function() {
             if(this.choosen_doctor_id == "")
+            {
                 this.choosen_doctor_id = this.doctors[0].id
+                this.index = 0;
+            }
             console.log(this.choosen_doctor_id) 
-            axios.put("http://localhost:8082/appoitnment", {username: localStorage.getItem('username'), 
+            this.doctors[this.index].appNumber++
+            console.log(this.doctors[this.index].appNumber)
+            this.free_slots = this.masx_slots - this.doctors[this.index].appNumber
+            await axios.put("http://localhost:8082/appoitnment", {username: localStorage.getItem('username'), 
                                                            doc_id: this.choosen_doctor_id, 
                                                            short_description: this.short_description,
                                                            simptoms: this.simptoms,
@@ -100,7 +114,27 @@ export default {
         },
 
         select_change: function(event) {
-            this.choosen_doctor_id = this.doctors[event.target.value.split(".")[0]-1].id;  
+            this.index = event.target.value.split(".")[0]-1;
+            this.choosen_doctor_id = this.doctors[event.target.value.split(".")[0]-1].id
+            this.free_slots = this.masx_slots - this.doctors[event.target.value.split(".")[0]-1].appNumber
+        },
+
+        date_change: async function() {
+            console.log("    ")
+            console.log("old " + this.oldDate)
+            console.log("new " + this.dates.simple)
+            if(new Date(this.oldDate).getTime() !== new Date(this.dates.simple).getTime())
+            {
+                console.log("endterd")
+                this.oldDate = this.dates.simple
+                await axios.put("http://localhost:8082/doctor",{date: this.dates.simple}).then(
+                    response => (this.doctors = response.data)
+                )
+                
+                console.log(this.doctors[0].appNumber)
+                this.free_slots = this.masx_slots - this.doctors[0].appNumber
+                //this.rerender += 1
+            }
         }
     }
 };
