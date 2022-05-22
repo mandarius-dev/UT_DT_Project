@@ -265,7 +265,8 @@ api.put('/profile', async function (request, response) {
             gender: resultUser.gender,
             address: resultUser.address,
             phone_number: resultUser.phone_number,
-            user_type: resultUser.user_type
+            user_type: resultUser.user_type,
+            age: resultUser.age
           }
           console.log(user);
           response.json(user);
