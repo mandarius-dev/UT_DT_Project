@@ -96,8 +96,8 @@
                                 <div class="mb-3 mt-2" v-for="(app, index) in appointments" :key="index">
                                     <base-button @click="button_click(index)" style="width: 100%" class="btn-1" outline type="primary">
                                         <h6>{{app.date}}</h6>
-                                        <h5>{{app.name_doc}}</h5>
-                                        <h6>{{app.short_description}}</h6>
+                                        <h5 style="overflow: hidden">{{app.name_doc}}</h5>
+                                        <h6 style="overflow: hidden">{{app.short_description}}</h6>
                                     </base-button>
                                 </div>
                             </div>
@@ -114,20 +114,22 @@ import axios from 'axios';
 export default {
     name: "Profile",
     async beforeMount() {
-        await axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
-            response => (this.appointments = response.data)
-        ),
-        await axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
-                response => (this.user_id = response.data.user_id,
-                    this.username = response.data.username,
-                    this.first_name = response.data.first_name,
-                    this.gender = response.data.gender,
-                    this.last_name = response.data.last_name,
-                    this.address = response.data.address,
-                    this.phone_number = response.data.phone_number,
-                    this.age = response.data.age,
-                    this.user_type = response.data.user_type) 
-            );
+        if(localStorage.getItem('username') != "") {
+            await axios.put("http://localhost:8082/user_appointment",{username: localStorage.getItem('username')}).then(
+                response => (this.appointments = response.data)
+            ),
+            await axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
+                    response => (this.user_id = response.data.user_id,
+                        this.username = response.data.username,
+                        this.first_name = response.data.first_name,
+                        this.gender = response.data.gender,
+                        this.last_name = response.data.last_name,
+                        this.address = response.data.address,
+                        this.phone_number = response.data.phone_number,
+                        this.age = response.data.age,
+                        this.user_type = response.data.user_type) 
+                );
+        }
     },
     data() {
         return {

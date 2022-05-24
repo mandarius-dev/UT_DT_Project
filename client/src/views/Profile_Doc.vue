@@ -64,8 +64,8 @@
                                         <div class="mb-3 mt-2" v-for="(app, index) in appointments" :key="index">
                                             <base-button @click="button_click(index)" style="width: 100%" class="btn-1" outline type="primary">
                                                 <h6>{{app.date}}</h6>
-                                                <h5>{{app.name_user}}</h5>
-                                                <h6>{{app.short_description}}</h6>
+                                                <h5 style="overflow: hidden">{{app.name_user}}</h5>
+                                                <h6 style="overflow: hidden">{{app.short_description}}</h6>
                                             </base-button>
                                         </div>
                                     </div>

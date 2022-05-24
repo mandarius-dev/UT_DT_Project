@@ -81,6 +81,9 @@ import axios from 'axios';
 
 export default {
     name: "Login",
+    beforeMount() {
+        localStorage.setItem('username', "")
+    },
     data() {
         return {
             name: "Login",
