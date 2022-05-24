@@ -10,6 +10,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
+                        <!-- Profile info card-->
                         <card shadow class="card-profile" no-body>
                             <div class="px-4">
                                 <div class="text-left mt-3">
@@ -46,6 +47,7 @@
                             </div>
                         </card>
                         <br>
+                        <!-- Appointment onfo info card-->
                         <card shadow class="card-profile" no-body>
                             <div class="px-4">
                                 <div class="mt-5">
@@ -80,7 +82,8 @@
                                 </div>
                             </div>
                         </card>
-                    </div>  
+                    </div>
+                    <!-- List of appointments--> 
                     <div class="col-lg-4">
                         <card type="secondary" shadow
                             header-classes="bg-grey pb-5"

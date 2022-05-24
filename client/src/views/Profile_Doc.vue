@@ -3,37 +3,43 @@
         <section class="section section-skew">
             <div class="container pt-lg-md">
                 <div class="col-lg">
-                    <card shadow class="card-profile" no-body>
-                        <div class="px-4">
-                            <div class="text-left mt-5">
-                                <h3>Jessica Jones
-                                    <span class="font-weight-light">, Age</span>
-                                </h3>
-                                <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Gender</div>
-                                <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Address</div>
+                    <!-- Profile info card-->
+                        <card shadow class="card-profile" no-body>
+                            <div class="px-4">
+                                <div class="text-left mt-3">
+                                    <div class="row">
+                                        <div class="col-lg-8 order-lg-1">
+                                            <h3>{{first_name}} {{last_name}}, {{age}}</h3>
+                                        </div>
+                                    </div>
+                                    <h5>Username</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{username}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Address</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{address}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Phone number</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{phone_number}}</p>
+                                        </div>
+                                    </div>
+                                    <h5>Gender</h5>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <p>{{gender}}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mt-5">
-                                <h5>Stomac pain</h5>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <p>The description of what the patient said</p>
-                                    </div>
-                                </div>
-                                <h5>Diagnostic</h5>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <p>The diagnostic given by the doctor</p>
-                                    </div>
-                                </div>
-                                <h5>Observations</h5>
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <p>Should be addmited to the hospital</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </card>
+                        </card>
+                        <br>
                     <div class="row justify-content-center mr-1">
                         <div class="col-lg-4 mt-5">
                             <card type="secondary" shadow
@@ -129,10 +135,21 @@ export default {
     components: {
         flatPicker
     },
-    beforeMount() {
-        axios.put("http://localhost:8082/doc_appointment",{username: localStorage.getItem('username'), date: this.dates.simple}).then(
+    async beforeMount() {
+        await axios.put("http://localhost:8082/doc_appointment",{username: localStorage.getItem('username'), date: this.dates.simple}).then(
             response => (this.appointments = response.data)
-        )
+        ),
+        await axios.put("http://localhost:8082/profile", {username: localStorage.getItem('username')}).then(
+                response => (this.user_id = response.data.user_id,
+                    this.username = response.data.username,
+                    this.first_name = response.data.first_name,
+                    this.gender = response.data.gender,
+                    this.last_name = response.data.last_name,
+                    this.address = response.data.address,
+                    this.phone_number = response.data.phone_number,
+                    this.age = response.data.age,
+                    this.user_type = response.data.user_type) 
+            );
     },
     data() {
         return {
@@ -148,7 +165,19 @@ export default {
             date: "",
             index: -1,
             rerender: 0,
-            oldDate: ""
+            oldDate: "",
+
+            user_id: '',
+            username: '',
+            password: '',
+            first_name: '',
+            last_name: '',
+            gender: '',
+            address: '',
+            age: '',
+            phone_number: '',
+            user_type: '',
+            specialisation: ''
         };
     },
     methods: {
