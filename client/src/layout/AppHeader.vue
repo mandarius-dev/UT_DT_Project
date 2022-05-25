@@ -2,7 +2,7 @@
     <header class="header-global">
         <base-nav class="navbar-main" transparent type="" effect="light" expand>
             <router-link slot="brand" class="navbar-brand mr-lg-5" to="/login">
-                <h3>NEMAN</h3>
+                <h3>Hospital Appointment System</h3>
             </router-link>
         </base-nav>
     </header>

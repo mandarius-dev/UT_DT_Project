@@ -127,6 +127,30 @@ api.put('/appoitnment', async function (request, response) {
 })
 });
 
+api.put('/doc_diagnostic', async function (request, response) {
+  await mongo().then(async (mongoose) => {
+    try {
+      console.log(request.body)
+      console.log(new mongoose.Types.ObjectId(request.body.id));
+      const appointment = await appointmentSchema.findById(new mongoose.Types.ObjectId(request.body.id));
+      console.log(appointment);
+
+      if (appointment){
+        appointment.diagnostic = request.body.diagnostic;
+        appointment.medication = request.body.medication;
+        appointment.observation = request.body.observations;
+        console.log(appointment);
+        await appointment.save();
+        response.json("true");
+      }
+      else response.json("false");
+      
+    } finally {
+        mongoose.connection.close()
+    }
+})
+});
+
 api.put('/user_appointment', async function (request, response) {
   await mongo().then(async (mongoose) => {
     try {
