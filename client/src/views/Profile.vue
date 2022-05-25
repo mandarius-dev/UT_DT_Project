@@ -138,6 +138,7 @@ export default {
             short_description: "Welcome to the appointment manager",
             description: "Below you would see what the doctor recomends",
             diagnostic: "",
+            observations: "",
             medication: "",
             remark: "",
             date: "",
@@ -178,6 +179,7 @@ export default {
                 this.description = "Below you would see what the doctor recomends"
                 this.diagnostic = ""
                 this.medication = ""
+                this.observations = ""
                 this.remark =  ""
                 this.date = ""
                 this.index = -1
@@ -199,6 +201,7 @@ export default {
             this.description = this.appointments[index].description;
             this.diagnostic = this.appointments[index].diagnostic;
             this.medication = this.appointments[index].medication;
+            this.observations = this.appointments[index].observations;
             this.remark = this.appointments[index].remark;
             this.date = this.appointments[index].date;
             this.index = index;

@@ -117,6 +117,7 @@ api.put('/appoitnment', async function (request, response) {
         description: request.body.simptoms,
         diagnostic: "No diagnostic given",
         medication: "No medication yet",
+        observations: "No observation yet",
         title: request.body.short_description
       }
 

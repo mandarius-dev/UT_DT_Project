@@ -8,6 +8,7 @@ const appointmentSchema = mongoose.Schema({
     description: String,
     diagnostic: String,
     medication: String,
+    observations: String,
     title: String
 })
 
