@@ -1,10 +1,13 @@
-#  Technical University of Cluj-Napoca 
+# Technical University of Cluj-Napoca 
 ## Data transmissions project
-### Appointment System for health clinics
-The project consists of a simple appointment system, the predefined users can make appointments to different doctors on different dates.
+
+### Appointment System for medical stations
+The project consists of a simple appointment system, with two user types: patients and doctors. 
+Patients can make appointments to different doctors on different dates. Th
 A doctor can have a maximum of 8 appointments a day. Doctors can add a diagnosis, and treatment details to each appointment. The diagnosis and treatment details can later be viewed by the pacients.
 
-## Installation 
+
+### Installation 
 There are two folders "client" and "server". In each folder the command:
 ```
 npm install
