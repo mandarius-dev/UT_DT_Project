@@ -40,6 +40,13 @@
                             </div>
                         </card>
                         <br>
+                    <div v-show="alert_error" class="alert alert-danger" role="alert">
+                        Diagnosis could not be saved!
+                    </div>
+                    <div v-show="alert_success" class="alert alert-success" role="alert">
+                        Diagnosis saved!
+                    </div>
+                    <!--Appointments list-->
                     <div class="row justify-content-center mr-1">
                         <div class="col-lg-4 mt-5">
                             <card type="secondary" shadow
@@ -72,6 +79,7 @@
                                 </template>
                             </card>
                         </div>
+                        <!--Appointment details-->
                         <div class="col-lg-7 mt-5">
                             <card type="secondary" shadow
                                 header-classes="bg-grey pb-5"
@@ -93,7 +101,8 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="3" 
-                                                        placeholder="Pacients diagnostic">
+                                                        placeholder="Pacients diagnostic"
+                                                        v-model="diagnostic">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -102,7 +111,8 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="3" 
-                                                        placeholder="Medications needed">
+                                                        placeholder="Medications needed"
+                                                        v-model="medication">
                                                 </textarea>
                                             </div>
                                         </div>
@@ -111,11 +121,12 @@
                                             <div class="col-lg">
                                                 <textarea class="form-control form-control-alternative mb-3" 
                                                         rows="4" 
-                                                        placeholder="Remarks on the condition">
+                                                        placeholder="Remarks on the condition"
+                                                        v-model="observations">
                                                 </textarea>
                                             </div>
                                         </div>
-                                        <base-button class="mb-3" type="primary">Save</base-button>
+                                        <base-button @click="add_diagnostic" class="mb-3" type="primary">Save</base-button>
                                     </div>
                                 </template>
                             </card>
@@ -161,11 +172,14 @@ export default {
             description: "Below you can diagnoses and remarks",
             diagnostic: "",
             medication: "",
+            observations: "",
+            app_id: "",
             remark: "",
             date: "",
             index: -1,
             rerender: 0,
             oldDate: "",
+            error_message: "",
 
             user_id: '',
             username: '',
@@ -177,11 +191,15 @@ export default {
             age: '',
             phone_number: '',
             user_type: '',
-            specialisation: ''
+            specialisation: '',
+            alert_error:false,
+            alert_success:false
         };
     },
     methods: {
         button_click: function(index) {
+            this.alert_success = false
+            this.alert_error = false
             console.log(this.appointments[index].date)
             this.short_description = this.appointments[index].short_description;
             this.description = this.appointments[index].description;
@@ -190,6 +208,8 @@ export default {
             this.remark = this.appointments[index].remark;
             this.date = this.appointments[index].date;
             this.index = index;
+            this.app_id = this.appointments[index].id;
+            this.observations = this.appointments[index].observations;
         },
 
         date_change: async function() {
@@ -208,6 +228,20 @@ export default {
                 this.rerender += 1
             }
 
+        },
+
+        add_diagnostic: async function() {
+            await axios.put("http://localhost:8082/doc_diagnostic",{id: this.app_id, diagnostic: this.diagnostic, medication: this.medication, observations: this.observations}).then(
+                    response => (this.error_message = response.data)
+                )
+            if (this.error_message == "true"){
+                this.alert_error = false;
+                this.alert_success = true;
+            }
+            else{
+                this.alert_error = true;
+                this.alert_success = false;
+            }
         }
     }
 };
