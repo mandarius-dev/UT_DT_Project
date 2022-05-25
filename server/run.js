@@ -139,7 +139,7 @@ api.put('/doc_diagnostic', async function (request, response) {
       if (appointment){
         appointment.diagnostic = request.body.diagnostic;
         appointment.medication = request.body.medication;
-        appointment.observation = request.body.observations;
+        appointment.observations = request.body.observations;
         console.log(appointment);
         await appointment.save();
         response.json("true");
@@ -183,6 +183,8 @@ api.put('/user_appointment', async function (request, response) {
           _id: new mongoose.Types.ObjectId(doc[0].spec_id.valueOf())
         })
 
+        console.log(appointments[i])
+
         var appInfo = {
           id: new mongoose.Types.ObjectId(appointments[i]._id.valueOf()),
           name_doc: docName[0].first_name + " " + docName[0].last_name,
@@ -191,6 +193,7 @@ api.put('/user_appointment', async function (request, response) {
           short_description: appointments[i].title,
           description: appointments[i].description,
           diagnostic: appointments[i].diagnostic,
+          observations: appointments[i].observations,
           medication: appointments[i].medication,
           remark: appointments[i].remark,
         }
@@ -240,6 +243,7 @@ api.put('/doc_appointment', async function (request, response) {
           description: appointments[i].description,
           diagnostic: appointments[i].diagnostic,
           medication: appointments[i].medication,
+          observations: appointments[i].observations,
           remark: appointments[i].remark,
         }
 

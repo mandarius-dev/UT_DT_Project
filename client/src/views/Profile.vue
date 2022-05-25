@@ -72,7 +72,7 @@
                                     <h5>Observations</h5>
                                     <div class="row">
                                         <div class="col-lg">
-                                            <p>{{remark}}</p>
+                                            <p>{{observations}}</p>
                                         </div>
                                     </div>
                                     <base-button class="mb-3 mr-4" type="primary" @click="cancel_appointment">Cancel appoiment</base-button>
