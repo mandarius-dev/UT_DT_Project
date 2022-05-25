@@ -201,14 +201,15 @@ api.put('/doc_appointment', async function (request, response) {
 
       for(var i=0; i < appointments.length; i++)
       {
-        const user = await userSchema.find({
-          user_id: new mongoose.Types.ObjectId(appointments[i].user_id.valueOf()),
+        const user = await userSchema.findOne({
+          _id: new mongoose.Types.ObjectId(appointments[i].user_id.valueOf()),
           user_type: 1
         })
+        
 
         var appInfo = {
           id: new mongoose.Types.ObjectId(appointments[i]._id.valueOf()),
-          name_user: user[0].first_name + " " + user[0].last_name,
+          name_user: user.first_name + " " + user.last_name,
           date: appointments[i].date,
           short_description: appointments[i].title,
           description: appointments[i].description,
