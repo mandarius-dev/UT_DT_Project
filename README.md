@@ -16,7 +16,7 @@ needs to be run.
 
 After that the client will be run with the command:
 ```
-npm run server
+npm run serve
 ``` 
 and for the server 
 ```
